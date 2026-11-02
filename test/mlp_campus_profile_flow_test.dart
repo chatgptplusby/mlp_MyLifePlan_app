@@ -30,6 +30,9 @@ void main() {
     expect(find.text('Mening yutuqlarim'), findsOneWidget);
     expect(find.text('Hamkorlar va bonuslar'), findsOneWidget);
     expect(find.text('Ma‘muriyatga murojaat'), findsOneWidget);
+    expect(find.text('Profil'), findsWidgets); // header title and bottom nav
+    expect(find.text('Asosiy'), findsOneWidget);
+    expect(find.text('Mukofotlar'), findsOneWidget);
 
     // -------------------------------------------------------------
     // Screen 2: Mening yutuqlarim
@@ -64,7 +67,20 @@ void main() {
     expect(find.text('🪙 800 coin'), findsOneWidget);
     expect(find.text('Voucher olish (800 coin)'), findsOneWidget);
 
-    // Back twice to Profile
+    // Back to Screen 3 (Partners)
+    await tester.tap(find.byType(IconButton).first);
+    await tester.pumpAndSettle();
+
+    // Scroll and tap "Eng yaqin hamkorlar" to open Screen 5 (Map)
+    await tester.drag(find.byType(ListView), const Offset(0, -200));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Eng yaqin hamkorlar'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Yaqin atrofdagi hamkorlar'), findsOneWidget);
+    expect(find.text('Marshrut (5 daqiqa)'), findsOneWidget);
+
+    // Back to Screen 3, then back to Screen 1 (Profile)
     await tester.tap(find.byType(IconButton).first);
     await tester.pumpAndSettle();
     await tester.tap(find.byType(IconButton).first);
@@ -116,5 +132,20 @@ void main() {
     expect(find.text('Wi-Fi qamrovini kengaytirish'), findsOneWidget);
     expect(find.text('Yakunlangan'), findsWidgets);
     expect(find.text('Jarayonda'), findsWidgets);
+
+    // Switch to Jarayonda tab
+    await tester.tap(find.byKey(const Key('tab_jarayonda')));
+    await tester.pumpAndSettle();
+    expect(find.text('Dars jadvalini optimallashtirish'), findsOneWidget);
+
+    // Switch to Yakunlangan tab
+    await tester.tap(find.byKey(const Key('tab_yakunlangan')));
+    await tester.pumpAndSettle();
+    expect(find.text('Kutubxonada yangi kitoblar'), findsOneWidget);
+
+    // Switch back to Barchasi
+    await tester.tap(find.byKey(const Key('tab_barchasi')));
+    await tester.pumpAndSettle();
+    expect(find.text('Wi-Fi qamrovini kengaytirish'), findsOneWidget);
   });
 }

@@ -35,6 +35,13 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
   late int _screen; // 0: Profil, 1: Yutuqlar, 2: Hamkorlar, 3: Partner Detail,
   // 4: Map, 5: Murojaat Hub, 6: Rektor Chat, 7: Murojaat Form, 8: Mening Murojaatlarim
 
+  // Screen 3 Partner tab filter
+  int _partnerPrimaryTab = 0; // 0: Hamkorlar, 1: Voucherlar, 2: Magazin
+  int _partnerCategoryIndex = 0; // 0: Barchasi, 1: Taom, 2: Kitob, 3: Ta'lim, 4: Boshqa
+
+  // Screen 9 Petition filter
+  int _petitionFilterIndex = 0; // 0: Barchasi, 1: Jarayonda, 2: Yakunlangan
+
   // Chat state
   final TextEditingController _chatController = TextEditingController();
   final List<Map<String, dynamic>> _chatMessages = [
@@ -296,10 +303,122 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
                 onTap: () => setState(() => _screen = 5),
               ),
               _menuItem(Icons.settings_outlined, 'Sozlamalar'),
+              const SizedBox(height: 10),
             ],
           ),
         ),
+        _buildBottomBar(),
       ],
+    );
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF13182E),
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(color: const Color(0xFF222B48)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x66000000),
+            blurRadius: 18,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _bottomNavItem(icon: Icons.home_rounded, label: 'Asosiy', isSelected: false, onTap: () => widget.onBackToDashboard?.call()),
+            ),
+          ),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _bottomNavItem(icon: Icons.menu_book_rounded, label: 'Fanlar', isSelected: false, onTap: () => widget.onBackToDashboard?.call()),
+            ),
+          ),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _bottomNavItem(icon: Icons.calendar_today_rounded, label: 'Dars jadvali', isSelected: false, onTap: () => widget.onBackToDashboard?.call()),
+            ),
+          ),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _bottomNavItem(icon: Icons.card_giftcard_rounded, label: 'Mukofotlar', isSelected: false, onTap: () => widget.onOpenMarket?.call()),
+            ),
+          ),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _bottomNavItem(icon: Icons.person_rounded, label: 'Profil', isSelected: true, onTap: () {}),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bottomNavItem({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    if (isSelected) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+          ),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x668B5CF6),
+              blurRadius: 10,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white, size: 18),
+            const SizedBox(width: 5),
+            Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 11)),
+          ],
+        ),
+      );
+    }
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: const Color(0xFF64748B), size: 20),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(0xFF64748B),
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -476,6 +595,18 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
     );
   }
 
+  Widget _segmentedTab(String text, bool active) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: active ? const Color(0xFF8B5CF6) : const Color(0xFF13182E),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Text(text, style: TextStyle(color: active ? Colors.white : const Color(0xFF9AA3C2), fontWeight: FontWeight.w700, fontSize: 12)),
+    );
+  }
+
   Widget _badgeCard(String title, String emoji, {required bool isUnlocked}) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -562,20 +693,70 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
               ),
               const SizedBox(height: 14),
 
-              // Categories Filter
+              // Primary Tabs: Hamkorlar | Voucherlar | Magazin
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _pillTab('Barchasi', true),
+                    InkWell(
+                      onTap: () => setState(() => _partnerPrimaryTab = 0),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Hamkorlar', _partnerPrimaryTab == 0),
+                    ),
                     const SizedBox(width: 8),
-                    _pillTab('Taom', false),
+                    InkWell(
+                      onTap: () => setState(() => _partnerPrimaryTab = 1),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Voucherlar', _partnerPrimaryTab == 1),
+                    ),
                     const SizedBox(width: 8),
-                    _pillTab('Kitob', false),
+                    InkWell(
+                      onTap: () {
+                        setState(() => _partnerPrimaryTab = 2);
+                        widget.onOpenMarket?.call();
+                      },
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Magazin', _partnerPrimaryTab == 2),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Categories Filter: Barchasi | Taom | Kitob | Ta'lim | Boshqa
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () => setState(() => _partnerCategoryIndex = 0),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Barchasi', _partnerCategoryIndex == 0),
+                    ),
                     const SizedBox(width: 8),
-                    _pillTab('Ta‘lim', false),
+                    InkWell(
+                      onTap: () => setState(() => _partnerCategoryIndex = 1),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Taom', _partnerCategoryIndex == 1),
+                    ),
                     const SizedBox(width: 8),
-                    _pillTab('Boshqa', false),
+                    InkWell(
+                      onTap: () => setState(() => _partnerCategoryIndex = 2),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Kitob', _partnerCategoryIndex == 2),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () => setState(() => _partnerCategoryIndex = 3),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Ta‘lim', _partnerCategoryIndex == 3),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () => setState(() => _partnerCategoryIndex = 4),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _pillTab('Boshqa', _partnerCategoryIndex == 4),
+                    ),
                   ],
                 ),
               ),
@@ -891,59 +1072,183 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
         Expanded(
           child: Container(
             margin: const EdgeInsets.all(16),
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: const Color(0xFF0F1428),
+              color: const Color(0xFF0C1024),
               border: Border.all(color: const Color(0xFF222B48)),
             ),
             child: Stack(
-              alignment: Alignment.bottomCenter,
               children: [
+                // Faint street grid lines
+                CustomPaint(
+                  size: Size.infinite,
+                  painter: _MapGridPainter(),
+                ),
+
+                // Radar concentric rings
                 Center(
                   child: Container(
-                    width: 200,
-                    height: 200,
+                    width: 260,
+                    height: 260,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: const Color(0xFF1E294B), width: 1.5),
+                      border: Border.all(color: const Color(0x3338BDF8), width: 1.2),
                     ),
                   ),
                 ),
-                const Center(child: Text('🍕', style: TextStyle(fontSize: 32))),
+                Center(
+                  child: Container(
+                    width: 170,
+                    height: 170,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0x4438BDF8), width: 1.2),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0x5538BDF8), width: 1.2),
+                    ),
+                  ),
+                ),
+
+                // Current location center pulse dot
+                Center(
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0x4438BDF8),
+                      border: Border.all(color: const Color(0xFF38BDF8), width: 2),
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFF38BDF8),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Partner Pin 1 (Top: Taom / Food)
+                Positioned(
+                  top: 70,
+                  left: 110,
+                  child: _mapPin(color: const Color(0xFFFF9800), icon: Icons.restaurant_rounded),
+                ),
+
+                // Partner Pin 2 (Right: Taom / Food)
+                Positioned(
+                  top: 130,
+                  right: 50,
+                  child: _mapPin(color: const Color(0xFFFF9800), icon: Icons.restaurant_rounded),
+                ),
+
+                // Partner Pin 3 (Left: Kitob / Shop)
+                Positioned(
+                  top: 180,
+                  left: 45,
+                  child: _mapPin(color: const Color(0xFF2563EB), icon: Icons.shopping_bag_rounded),
+                ),
+
+                // Partner Pin 4 (Bottom Right: Taom / Food)
+                Positioned(
+                  bottom: 110,
+                  right: 85,
+                  child: _mapPin(color: const Color(0xFFFF9800), icon: Icons.restaurant_rounded),
+                ),
+
+                // Location crosshair button on right
+                Positioned(
+                  bottom: 110,
+                  right: 20,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF13182E),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFF222B48)),
+                    ),
+                    child: const Icon(Icons.my_location_rounded, color: Colors.white, size: 20),
+                  ),
+                ),
 
                 // Card at bottom
-                Container(
-                  margin: const EdgeInsets.all(14),
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF13182E),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: const Color(0xFF222B48)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Text('🍕', style: TextStyle(fontSize: 26)),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Text('Dodo Pizza', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14)),
-                            Text('1.2 km • 10:00 - 23:00', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
-                          ],
+                Positioned(
+                  bottom: 12,
+                  left: 10,
+                  right: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF13182E),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: const Color(0xFF222B48)),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x66000000),
+                          blurRadius: 16,
+                          offset: Offset(0, 6),
                         ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2563EB),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFF9800),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.local_pizza_rounded, color: Colors.white, size: 22),
+                          ),
                         ),
-                        child: const Text('Marshrut (5 daqiqa)', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                      ),
-                    ],
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text('Dodo Pizza', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13)),
+                              SizedBox(height: 2),
+                              Text('1.2 km • 10:00 - 23:00', overflow: TextOverflow.ellipsis, style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2563EB),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(Icons.navigation_outlined, color: Colors.white, size: 12),
+                              SizedBox(width: 3),
+                              Text('Marshrut (5 daqiqa)', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -951,6 +1256,28 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _mapPin({required Color color, required IconData icon}) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.5),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Icon(icon, color: Colors.white, size: 18),
+      ),
     );
   }
 
@@ -1312,24 +1639,48 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
         // Tabs: Barchasi | Jarayonda | Yakunlangan
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _pillTab('Barchasi', true),
-                const SizedBox(width: 8),
-                _pillTab('Jarayonda', false),
-                const SizedBox(width: 8),
-                _pillTab('Yakunlangan', false),
-              ],
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  key: const Key('tab_barchasi'),
+                  onTap: () => setState(() => _petitionFilterIndex = 0),
+                  borderRadius: BorderRadius.circular(14),
+                  child: _segmentedTab('Barchasi', _petitionFilterIndex == 0),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: InkWell(
+                  key: const Key('tab_jarayonda'),
+                  onTap: () => setState(() => _petitionFilterIndex = 1),
+                  borderRadius: BorderRadius.circular(14),
+                  child: _segmentedTab('Jarayonda', _petitionFilterIndex == 1),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: InkWell(
+                  key: const Key('tab_yakunlangan'),
+                  onTap: () => setState(() => _petitionFilterIndex = 2),
+                  borderRadius: BorderRadius.circular(14),
+                  child: _segmentedTab('Yakunlangan', _petitionFilterIndex == 2),
+                ),
+              ),
+            ],
           ),
         ),
 
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: _petitions.map((p) {
+            children: _petitions
+                .where((p) {
+                  if (_petitionFilterIndex == 1) return p['isDone'] == false;
+                  if (_petitionFilterIndex == 2) return p['isDone'] == true;
+                  return true;
+                })
+                .map((p) {
               final isDone = p['isDone'] as bool;
               return Container(
                 margin: const EdgeInsets.only(bottom: 10),
@@ -1406,4 +1757,30 @@ class _detailInfoRow extends StatelessWidget {
       ],
     );
   }
+}
+
+class _MapGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0x1F38BDF8)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    // Angled street network lines
+    final path = Path()
+      ..moveTo(0, size.height * 0.25)
+      ..lineTo(size.width, size.height * 0.45)
+      ..moveTo(0, size.height * 0.7)
+      ..lineTo(size.width * 0.8, size.height * 0.1)
+      ..moveTo(size.width * 0.2, 0)
+      ..lineTo(size.width * 0.85, size.height)
+      ..moveTo(size.width * 0.6, 0)
+      ..lineTo(size.width * 0.35, size.height);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
