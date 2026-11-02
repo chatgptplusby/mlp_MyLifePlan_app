@@ -264,61 +264,6 @@ class _VerificationState extends State<MLPVerificationPage> {
                   }),
           ),
         ] else ...[
-          if (MLPQuizCatalog.score(quiz, answers) >= 2) ...[
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const RadialGradient(
-                  colors: [Color(0xFF382306), Color(0xFF131D38)],
-                  radius: 1.2,
-                ),
-                border: Border.all(color: const Color(0xFFFFB800), width: 2),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFFFB800).withValues(alpha: 0.25),
-                    blurRadius: 20,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  const Icon(Icons.military_tech_rounded, color: Color(0xFFFFB800), size: 54),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'L3 Amaliy daraja',
-                    style: TextStyle(
-                      color: Color(0xFFFFB800),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 24,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      '+300 XP · +50 kredit',
-                      style: TextStyle(
-                        color: Color(0xFF00E5FF),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Blind Challenge muvaffaqiyatli topshirildi!',
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
           Text(
             '${MLPQuizCatalog.score(quiz, answers)} / ${questions.length} · ${MLPQuizCatalog.score(quiz, answers) >= 2 ? 'Namuna sinovidan o‘tdi' : 'Qayta mashq kerak'}',
             style: Theme.of(context).textTheme.headlineSmall,
@@ -394,132 +339,162 @@ class MLPPassportPage extends StatelessWidget {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: Listenable.merge([e.store, e.ui]),
     builder: (context, _) {
-      final hasAlgebra = e.ui.assessments.any((a) =>
-          a['quiz'] == 'Chiziqli algebra (Matritsalar)' &&
-          (a['correct'] as int) * 3 >= (a['total'] as int) * 2);
+      final hasAlgebra = e.ui.assessments.any(
+        (a) =>
+            a['quiz'] == 'Chiziqli algebra (Matritsalar)' &&
+            (a['correct'] as int) * 3 >= (a['total'] as int) * 2,
+      );
 
       return MLPPage(
-      title: 'Passport: Mening ko‘nikmalarim',
-      children: [
-        MLPGlassCard(
-          accent: true,
-          padding: 18,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (final skill in [
-                ('Chiziqli algebra', hasAlgebra ? 'L3 Amaliy daraja' : '3-semestr', hasAlgebra ? 1.0 : 0.30, const Color(0xFFFFB800)),
-                ('Flutter', 'Asosiy daraja', 0.65, const Color(0xFF00E5FF)),
-                ('Dart', 'Asosiy daraja', 0.70, const Color(0xFF2979FF)),
-                ('UI/UX', 'Boshlang‘ich', 0.40, const Color(0xFFBA6AFF)),
-              ]) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.verified_rounded, size: 16, color: skill.$4),
-                        const SizedBox(width: 8),
-                        Text(skill.$1, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                        const SizedBox(width: 8),
-                        Text('· ${skill.$2}', style: const TextStyle(color: MLPColors.secondaryText, fontSize: 12)),
-                      ],
+        title: 'Passport: Mening ko‘nikmalarim',
+        children: [
+          MLPGlassCard(
+            accent: true,
+            padding: 18,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final skill in [
+                  (
+                    'Chiziqli algebra',
+                    hasAlgebra ? 'L3 Amaliy daraja' : '3-semestr',
+                    hasAlgebra ? 1.0 : 0.30,
+                    const Color(0xFFFFB800),
+                  ),
+                  ('Flutter', 'Asosiy daraja', 0.65, const Color(0xFF00E5FF)),
+                  ('Dart', 'Asosiy daraja', 0.70, const Color(0xFF2979FF)),
+                  ('UI/UX', 'Boshlang‘ich', 0.40, const Color(0xFFBA6AFF)),
+                ]) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.verified_rounded,
+                            size: 16,
+                            color: skill.$4,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            skill.$1,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '· ${skill.$2}',
+                            style: const TextStyle(
+                              color: MLPColors.secondaryText,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '${(skill.$3 * 100).toInt()}%',
+                        style: TextStyle(
+                          color: skill.$4,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: LinearProgressIndicator(
+                      value: skill.$3,
+                      minHeight: 6,
+                      backgroundColor: Colors.white10,
+                      valueColor: AlwaysStoppedAnimation(skill.$4),
                     ),
-                    Text('${(skill.$3 * 100).toInt()}%', style: TextStyle(color: skill.$4, fontWeight: FontWeight.bold, fontSize: 13)),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: LinearProgressIndicator(
-                    value: skill.$3,
-                    minHeight: 6,
-                    backgroundColor: Colors.white10,
-                    valueColor: AlwaysStoppedAnimation(skill.$4),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () => e.go(MLPScreen.verification),
+                    icon: const Icon(Icons.add_rounded, size: 18),
+                    label: const Text('+ Yangi ko‘nikma qo‘shish'),
                   ),
                 ),
-                const SizedBox(height: 16),
               ],
-              Center(
-                child: TextButton.icon(
-                  onPressed: () => e.go(MLPScreen.verification),
-                  icon: const Icon(Icons.add_rounded, size: 18),
-                  label: const Text('+ Yangi ko‘nikma qo‘shish'),
-                ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          MLPMetrics(
+            items: [
+              (
+                value: '${e.store.tasks.where((t) => t.completed).length}',
+                label: 'Topshirilgan vazifalar',
+                icon: Icons.task_alt,
+              ),
+              (
+                value: '${e.ui.assessments.length}',
+                label: 'Namuna baholashlar',
+                icon: Icons.fact_check_outlined,
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 20),
-        MLPMetrics(
-          items: [
-            (
-              value: '${e.store.tasks.where((t) => t.completed).length}',
-              label: 'Topshirilgan vazifalar',
-              icon: Icons.task_alt,
+          const SizedBox(height: 24),
+          const MLPSectionHeader(title: 'Ko‘nikmalar · namuna baholash'),
+          const SizedBox(height: 12),
+          if (e.ui.assessments.isEmpty)
+            MLPEmptyState(
+              title: 'Baholash hali yo‘q',
+              message:
+                  'Topshirilgan ish yoki fokus vaqtini tasdiqlangan ko‘nikma deb hisoblamaymiz.',
+              action: 'Namuna testini ochish',
+              onAction: () => e.go(MLPScreen.verification),
             ),
-            (
-              value: '${e.ui.assessments.length}',
-              label: 'Namuna baholashlar',
-              icon: Icons.fact_check_outlined,
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
-        const MLPSectionHeader(title: 'Ko‘nikmalar · namuna baholash'),
-        const SizedBox(height: 12),
-        if (e.ui.assessments.isEmpty)
-          MLPEmptyState(
-            title: 'Baholash hali yo‘q',
-            message:
-                'Topshirilgan ish yoki fokus vaqtini tasdiqlangan ko‘nikma deb hisoblamaymiz.',
-            action: 'Namuna testini ochish',
-            onAction: () => e.go(MLPScreen.verification),
-          ),
-        ...e.ui.assessments.reversed.map(
-          (a) => MLPMenuTile(
-            title: '${a['quiz']} · ${a['correct']}/${a['total']}',
-            subtitle:
-                '${mlpDayKey(DateTime.parse(a['at'] as String))} · belgilangan javobli namuna\nTo‘liq ko‘nikma tasdiqlanmagan',
-            icon: (a['correct'] as int) * 3 >= (a['total'] as int) * 2
-                ? Icons.check_circle_outline
-                : Icons.school_outlined,
-            onTap: () => e.info(
-              context,
-              'Baholash turi',
-              'Mahalliy belgilangan javoblar avtomatik tekshirilgan. Faqat ${a['total']} savol bo‘yicha ${a['correct']} to‘g‘ri javob. Bu mustaqil ekspert sertifikati yoki butun kasbiy mahorat tasdig‘i emas.',
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-        const MLPSectionHeader(title: 'Loyihalardagi topshirilgan ishlar'),
-        const SizedBox(height: 12),
-        if (!e.store.tasks.any((t) => t.completed))
-          const MLPEmptyState(
-            title: 'Hali ish topshirilmagan',
-            message:
-                'Vazifani bajarib, o‘z hisobotingiz yoki dalil havolasini qo‘shing.',
-          ),
-        ...e.store.tasks
-            .where((t) => t.completed)
-            .take(30)
-            .map(
-              (t) => MLPMenuTile(
-                title: t.title,
-                subtitle:
-                    '${t.project} · o‘z hisoboti · ${mlpDayKey(t.completedAt ?? t.dueDate)}',
-                icon: Icons.folder_open,
-                onTap: () => e.info(
-                  context,
-                  'Topshirilgan dalil',
-                  '${t.proof}\n${t.evidenceUrl}\n\nHavola avtomatik tekshirilmagan.',
-                ),
+          ...e.ui.assessments.reversed.map(
+            (a) => MLPMenuTile(
+              title: '${a['quiz']} · ${a['correct']}/${a['total']}',
+              subtitle:
+                  '${mlpDayKey(DateTime.parse(a['at'] as String))} · belgilangan javobli namuna\nTo‘liq ko‘nikma tasdiqlanmagan',
+              icon: (a['correct'] as int) * 3 >= (a['total'] as int) * 2
+                  ? Icons.check_circle_outline
+                  : Icons.school_outlined,
+              onTap: () => e.info(
+                context,
+                'Baholash turi',
+                'Mahalliy belgilangan javoblar avtomatik tekshirilgan. Faqat ${a['total']} savol bo‘yicha ${a['correct']} to‘g‘ri javob. Bu mustaqil ekspert sertifikati yoki butun kasbiy mahorat tasdig‘i emas.',
               ),
             ),
-      ],
-    );
-  },
-);
+          ),
+          const SizedBox(height: 20),
+          const MLPSectionHeader(title: 'Loyihalardagi topshirilgan ishlar'),
+          const SizedBox(height: 12),
+          if (!e.store.tasks.any((t) => t.completed))
+            const MLPEmptyState(
+              title: 'Hali ish topshirilmagan',
+              message:
+                  'Vazifani bajarib, o‘z hisobotingiz yoki dalil havolasini qo‘shing.',
+            ),
+          ...e.store.tasks
+              .where((t) => t.completed)
+              .take(30)
+              .map(
+                (t) => MLPMenuTile(
+                  title: t.title,
+                  subtitle:
+                      '${t.project} · o‘z hisoboti · ${mlpDayKey(t.completedAt ?? t.dueDate)}',
+                  icon: Icons.folder_open,
+                  onTap: () => e.info(
+                    context,
+                    'Topshirilgan dalil',
+                    '${t.proof}\n${t.evidenceUrl}\n\nHavola avtomatik tekshirilmagan.',
+                  ),
+                ),
+              ),
+        ],
+      );
+    },
+  );
 }
 
 class MLPGrowthPage extends StatefulWidget {

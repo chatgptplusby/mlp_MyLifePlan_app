@@ -7,6 +7,8 @@ import '../../demo/demo_store.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import '../../app/mlp_environment.dart';
 import '../../app/router/mlp_routes.dart';
+import 'mlp_campus_dashboard.dart';
+import 'mlp_subjects_flow.dart';
 
 /// MLP University Edition — Master 1:1 Implementation of the Competition Poster
 /// Encompassing the 7 Core Screens:
@@ -379,6 +381,8 @@ class _MLPUniversityHubState extends State<MLPUniversityHub> {
         return _buildScreen7ProofLevel();
       case 7:
         return _buildScreen8SkillPassport();
+      case 8:
+        return _buildScreen9LessonVideo();
       default:
         return _buildScreen1BoshSahifa();
     }
@@ -388,6 +392,34 @@ class _MLPUniversityHubState extends State<MLPUniversityHub> {
   // SCREEN 1: Bosh sahifa (Universitet, fanlar, asosiy modullar)
   // =========================================================================
   Widget _buildScreen1BoshSahifa() {
+    return MLPCampusDashboard(
+      prefs: widget.e?.prefs,
+      onNavigateSubject: (subject) {
+        setState(() => _selectedSubject = subject);
+        _goToScreen(1);
+      },
+      onNavigateQuiz: () => _goToScreen(4),
+      onNavigateMission: () => _goToScreen(5),
+      onNavigateRewards: () {
+        if (widget.e != null) {
+          widget.e!.go(MLPScreen.rewards);
+        }
+      },
+      onNavigateProfile: () => _goToScreen(7),
+      onNavigateSchedule: () => _goToScreen(1),
+      onNavigateCourses: () => _goToScreen(2),
+    );
+  }
+
+  Widget _buildScreen9LessonVideo() {
+    return MLPLessonVideoScreen(
+      lessonTitle: 'Dars: Determinant',
+      onBack: () => _goToScreen(2),
+      onStartTest: () => _goToScreen(4),
+    );
+  }
+
+  Widget _legacyBuildScreen1BoshSahifa() {
     return ListView(
       key: const ValueKey('screen_1_home'),
       padding: const EdgeInsets.all(16),
@@ -657,6 +689,19 @@ class _MLPUniversityHubState extends State<MLPUniversityHub> {
   // SCREEN 2: Fanlar (Semestr bo'yicha fanlar ro'yxati — 6 ta fan)
   // =========================================================================
   Widget _buildScreen2Fanlar() {
+    return MLPSubjectsListScreen(
+      onBack: () => _goToScreen(0),
+      onSelectSubject: (subject) {
+        setState(() => _selectedSubject = subject);
+        _goToScreen(2);
+      },
+      onNavTabSelected: (idx) {
+        if (idx == 0) _goToScreen(0);
+      },
+    );
+  }
+
+  Widget _legacyBuildScreen2Fanlar() {
     return ListView(
       key: const ValueKey('screen_2_subjects'),
       padding: const EdgeInsets.all(16),
@@ -758,6 +803,15 @@ class _MLPUniversityHubState extends State<MLPUniversityHub> {
   // SCREEN 3: Mavzu (Chiziqli algebra — Matritsalar)
   // =========================================================================
   Widget _buildScreen3Mavzu() {
+    return MLPSubjectDetailScreen(
+      subjectName: _selectedSubject,
+      onBack: () => _goToScreen(1),
+      onSelectTopic: (topic) => _goToScreen(8),
+      onStartChallenge: () => _goToScreen(4),
+    );
+  }
+
+  Widget _legacyBuildScreen3Mavzu() {
     return ListView(
       key: const ValueKey('screen_3_topic'),
       padding: const EdgeInsets.all(16),

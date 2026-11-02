@@ -30,7 +30,7 @@ class QuestsTab extends StatelessWidget {
             const MLPLiquidSurface(
               radius: 0,
               blur: false,
-              child: const TabBar(
+              child:  TabBar(
                 indicatorColor: MLPColors.turquoise,
                 labelColor: MLPColors.turquoise,
                 unselectedLabelColor: MLPColors.secondaryText,
@@ -177,7 +177,7 @@ class QuestsTab extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const MLPLiquidSurface(
+                MLPLiquidSurface(
                   radius: 10,
                   blur: false,
                   tint: MLPColors.success.withValues(alpha: 0.1),

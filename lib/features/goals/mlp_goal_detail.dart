@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/mlp_design_system.dart';
-import '../../app/mlp_environment.dart';
 import '../../core/design_system/mlp_widgets.dart';
 import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../data/repositories/mlp_ui_repository.dart';

@@ -38,8 +38,8 @@ void main() {
   }
 
   test('all 30 routes are unique and unknown routes parse safely', () {
-    expect(MLPScreen.values.length, 30);
-    expect(MLPScreen.values.map((s) => s.path).toSet().length, 30);
+    expect(MLPScreen.values.length, 31);
+    expect(MLPScreen.values.map((s) => s.path).toSet().length, 31);
     expect(MLPScreen.parse('/missing'), isNull);
     expect(MLPScreen.parse('/goals/detail?id=abc'), MLPScreen.goalDetail);
     expect(MLPScreen.parse('/projects'), MLPScreen.projects);

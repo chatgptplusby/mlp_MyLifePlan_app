@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mylife_plan/app/mlp_environment.dart';
 import 'package:mylife_plan/data/repositories/mlp_ui_repository.dart';
 import 'package:mylife_plan/demo/demo_store.dart';
 import 'package:mylife_plan/features/progress/mlp_progress_pages.dart';

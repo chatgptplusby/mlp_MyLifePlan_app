@@ -1,3 +1,4 @@
+import 'mlp_campus_entry.dart';
 import '../../app/mlp_environment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,19 @@ class _MLPEntryGateState extends State<MLPEntryGate> {
                   icon: Icons.error_outline_rounded,
                 ),
               ),
+            );
+          }
+          final hasUniversity =
+              widget.prefs.getString(MLPCampusEntry.universityKey) != null;
+          if (!hasUniversity && widget.prefs.getString('legacy') == null) {
+            return MLPCampusEntry(
+              prefs: widget.prefs,
+              onComplete: () async {
+                if (!repository.onboarded) {
+                  await repository.enterGuest();
+                }
+                if (mounted) setState(() {});
+              },
             );
           }
           return repository.onboarded
@@ -388,17 +402,16 @@ class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
             const SizedBox(height: 16),
             MLPPhoneField(controller: phone),
             const SizedBox(height: 24),
-            Text(
-              'Jins',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Jins', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16),
-                    onTap: busy ? null : () => setState(() => gender = 'O‘g‘il'),
+                    onTap: busy
+                        ? null
+                        : () => setState(() => gender = 'O‘g‘il'),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -479,7 +492,9 @@ class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
             const SizedBox(height: 12),
             InkWell(
               borderRadius: BorderRadius.circular(10),
-              onTap: busy ? null : () => setState(() => gender = 'Ko‘rsatmaslik'),
+              onTap: busy
+                  ? null
+                  : () => setState(() => gender = 'Ko‘rsatmaslik'),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                 child: Row(
@@ -496,7 +511,10 @@ class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
                     const SizedBox(width: 10),
                     const Text(
                       'Ko‘rsatmaslik',
-                      style: TextStyle(color: MLPColors.secondaryText, fontSize: 13),
+                      style: TextStyle(
+                        color: MLPColors.secondaryText,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -762,7 +780,7 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
     }
   }
 
-    final selectedInterests = <String>{'Ta’lim', 'Ingliz tili', 'Dasturlash'};
+  final selectedInterests = <String>{'Ta’lim', 'Ingliz tili', 'Dasturlash'};
 
   @override
   Widget build(BuildContext context) => _AccountPage(
@@ -906,57 +924,62 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 10,
-              children: [
-                'Ta’lim',
-                'Ingliz tili',
-                'Dasturlash',
-                'Sog‘lom turmush',
-                'Kasb',
-                'Moliya',
-                'Shaxsiy rivojlanish',
-                '+ Boshqa',
-              ].map((interest) {
-                final isSelected = selectedInterests.contains(interest);
-                return InkWell(
-                  borderRadius: BorderRadius.circular(20),
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedInterests.remove(interest);
-                      } else {
-                        selectedInterests.add(interest);
-                      }
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 9,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
-                          : const Color(0xFF131D38),
+              children:
+                  [
+                    'Ta’lim',
+                    'Ingliz tili',
+                    'Dasturlash',
+                    'Sog‘lom turmush',
+                    'Kasb',
+                    'Moliya',
+                    'Shaxsiy rivojlanish',
+                    '+ Boshqa',
+                  ].map((interest) {
+                    final isSelected = selectedInterests.contains(interest);
+                    return InkWell(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isSelected
-                            ? const Color(0xFF00E5FF)
-                            : Colors.white.withValues(alpha: 0.12),
-                        width: isSelected ? 1.5 : 1.0,
+                      onTap: () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedInterests.remove(interest);
+                          } else {
+                            selectedInterests.add(interest);
+                          }
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 9,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
+                              : const Color(0xFF131D38),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFF00E5FF)
+                                : Colors.white.withValues(alpha: 0.12),
+                            width: isSelected ? 1.5 : 1.0,
+                          ),
+                        ),
+                        child: Text(
+                          interest,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                            color: isSelected
+                                ? Colors.white
+                                : MLPColors.secondaryText,
+                          ),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      interest,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                        color: isSelected ? Colors.white : MLPColors.secondaryText,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
+                    );
+                  }).toList(),
             ),
             const SizedBox(height: 24),
             MLPTextField(
@@ -1107,4 +1130,3 @@ class _AccountHeading extends StatelessWidget {
     ),
   );
 }
-
