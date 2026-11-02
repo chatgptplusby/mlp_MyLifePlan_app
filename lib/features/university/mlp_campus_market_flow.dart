@@ -45,6 +45,15 @@ class MarketBonusItem {
   final List<String> branches;
   final String workingHours;
   final String phone;
+
+  String get formattedPrice {
+    if (coinPrice >= 1000) {
+      final k = coinPrice ~/ 1000;
+      final rem = coinPrice % 1000;
+      return '$k ${rem == 0 ? '000' : rem} coin';
+    }
+    return '$coinPrice coin';
+  }
 }
 
 class MLPCampusMarketFlow extends StatefulWidget {
@@ -70,8 +79,26 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
   int _usedVouchers = 12;
   int _weeklyEarned = 750;
 
-  int _selectedCategoryIndex = 0; // 0: Barchasi, 1: Kafe, 2: Kitob, 3: Kurs, 4: Chegirma
-  final List<String> _categories = ['Barchasi', 'Kafe', 'Kitob', 'Kurs', 'Chegirma'];
+  String get _formattedCoins {
+    if (_coins >= 1000) {
+      final k = _coins ~/ 1000;
+      final rem = _coins % 1000;
+      return '$k ${rem < 10 ? '00$rem' : rem < 100 ? '0$rem' : '$rem'} coin';
+    }
+    return '$_coins coin';
+  }
+
+  int _selectedCategoryIndex = 0;
+  final List<String> _categories = ['Barchasi', 'Kafe', 'Kitob', 'Kurs', 'Chegirma', 'Boshqalar'];
+
+  static const List<Map<String, dynamic>> _filterCategories = [
+    {'title': 'Barchasi', 'icon': Icons.grid_view_rounded},
+    {'title': 'Kafe', 'icon': Icons.coffee_rounded},
+    {'title': 'Kitob', 'icon': Icons.auto_stories_rounded},
+    {'title': 'Kurs', 'icon': Icons.school_rounded},
+    {'title': 'Chegirma', 'icon': Icons.local_offer_outlined},
+    {'title': 'Boshqalar', 'icon': Icons.more_horiz_rounded},
+  ];
 
   double _maxPriceSlider = 15000;
   String _selectedLocationFilter = 'Hamma joy';
@@ -299,10 +326,15 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                 const SizedBox(height: 16),
                 const Text('Kategoriya', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 10),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: List.generate(_categories.length, (i) {
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  childAspectRatio: 2.8,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  children: List.generate(_filterCategories.length, (i) {
+                    final cat = _filterCategories[i];
                     final isSel = _selectedCategoryIndex == i;
                     return InkWell(
                       onTap: () {
@@ -311,7 +343,7 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                       },
                       borderRadius: BorderRadius.circular(14),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                         decoration: BoxDecoration(
                           color: isSel ? const Color(0xFF2563EB) : const Color(0xFF1E2544),
                           borderRadius: BorderRadius.circular(14),
@@ -319,13 +351,20 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                             color: isSel ? const Color(0xFF38BDF8) : Colors.transparent,
                           ),
                         ),
-                        child: Text(
-                          _categories[i],
-                          style: TextStyle(
-                            color: isSel ? Colors.white : const Color(0xFFCBD5E1),
-                            fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                            fontSize: 13,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(cat['icon'] as IconData, color: isSel ? Colors.white : const Color(0xFF94A3B8), size: 16),
+                            const SizedBox(width: 8),
+                            Text(
+                              cat['title'] as String,
+                              style: TextStyle(
+                                color: isSel ? Colors.white : const Color(0xFFCBD5E1),
+                                fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -350,6 +389,13 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                     setSheetState(() => _maxPriceSlider = val);
                     setState(() => _maxPriceSlider = val);
                   },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text('0', style: TextStyle(color: Color(0xFF64748B), fontSize: 11, fontWeight: FontWeight.bold)),
+                    Text('15 000', style: TextStyle(color: Color(0xFF64748B), fontSize: 11, fontWeight: FontWeight.bold)),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 const Text('Joylashuv masofasi', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13, fontWeight: FontWeight.w600)),
@@ -474,12 +520,17 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        width: 32,
+                        height: 32,
                         decoration: const BoxDecoration(
-                          color: Color(0xFFF59E0B),
+                          gradient: LinearGradient(
+                            colors: [Color(0xFFFFC107), Color(0xFFF59E0B)],
+                          ),
                           shape: BoxShape.circle,
                         ),
-                        child: const Text('🪙', style: TextStyle(fontSize: 20)),
+                        child: const Center(
+                          child: Text('2', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 16)),
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -487,7 +538,7 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '$_coins coin',
+                              _formattedCoins,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w900,
@@ -501,7 +552,7 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                           ],
                         ),
                       ),
-                      const Text('💰', style: TextStyle(fontSize: 32)),
+                      const Text('🪙💰', style: TextStyle(fontSize: 28)),
                     ],
                   ),
                 ),
@@ -579,8 +630,19 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '${item.partner} • ${item.distance}',
+                              item.partner,
                               style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                            ),
+                            const SizedBox(height: 2),
+                            Row(
+                              children: [
+                                const Icon(Icons.location_on_outlined, color: Color(0xFF64748B), size: 12),
+                                const SizedBox(width: 2),
+                                Text(
+                                  item.distance,
+                                  style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 6),
                             Row(
@@ -588,7 +650,7 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                                 const Text('🪙', style: TextStyle(fontSize: 13)),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${item.coinPrice} coin',
+                                  item.formattedPrice,
                                   style: const TextStyle(
                                     color: Color(0xFFFFB800),
                                     fontWeight: FontWeight.w800,
@@ -1072,14 +1134,37 @@ class _MLPCampusMarketFlowState extends State<MLPCampusMarketFlow> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('$_coins coin', style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w900)),
-                        const SizedBox(height: 2),
-                        const Text('Joriy balans', style: TextStyle(color: Color(0xFF9AA3C2), fontSize: 13)),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFFFFC107), Color(0xFFF59E0B)],
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Center(
+                              child: Text('3', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 16)),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(_formattedCoins, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
+                                const SizedBox(height: 2),
+                                const Text('Joriy balans', style: TextStyle(color: Color(0xFF9AA3C2), fontSize: 13)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(

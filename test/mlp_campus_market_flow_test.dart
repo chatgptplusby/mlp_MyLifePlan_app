@@ -26,13 +26,19 @@ void main() {
     // Screen 1: Mukofotlar do'koni
     // -------------------------------------------------------------
     expect(find.text('Mukofotlar do‘koni'), findsOneWidget);
-    expect(find.text('2450 coin'), findsOneWidget);
+    expect(find.text('2 450 coin'), findsOneWidget);
     expect(find.text('Kafeda qahva kuponi'), findsOneWidget);
     expect(find.text('Kitob xaridi uchun voucher'), findsOneWidget);
     expect(find.text('Kursga 20% chegirma'), findsOneWidget);
+
+    // Scroll slightly to verify 4th item
+    await tester.drag(find.byType(ListView), const Offset(0, -150));
+    await tester.pumpAndSettle();
     expect(find.text('Kantselyariya to‘plami'), findsOneWidget);
 
-    // Tap "Olish" on first item to open Screen 2 (Bonus tafsiloti)
+    // Scroll back up and tap "Olish" on first item
+    await tester.drag(find.byType(ListView), const Offset(0, 150));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Olish').first);
     await tester.pumpAndSettle();
 
@@ -66,7 +72,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mening coinlarim'), findsOneWidget);
-    expect(find.text('1950 coin'), findsOneWidget); // 2450 - 500 = 1950
+    expect(find.text('1 950 coin'), findsOneWidget); // 2450 - 500 = 1950
     expect(find.text('+750'), findsOneWidget);
     expect(find.text('Tarix'), findsOneWidget);
     expect(find.text('Vazifa: Darsga qatnashish'), findsOneWidget);
