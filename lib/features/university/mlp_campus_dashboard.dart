@@ -265,20 +265,24 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
-                children: [
-                  Text(
-                    'Salom, Aziz!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.4,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: const Row(
+                  children: [
+                    Text(
+                      'Salom, Aziz!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.4,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 6),
-                  Text('👋', style: TextStyle(fontSize: 20)),
-                ],
+                    SizedBox(width: 6),
+                    Text('👋', style: TextStyle(fontSize: 20)),
+                  ],
+                ),
               ),
               const SizedBox(height: 4),
               Text(
@@ -495,40 +499,43 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
             children: [
               Align(
                 alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      icon,
-                      color: isLight ? const Color(0xFF6D28D9) : Colors.white,
-                      size: 26,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: isLight
-                            ? const Color(0xFF1E1B4B)
-                            : Colors.white,
-                        fontSize: 12,
-                        fontWeight:
-                            isLight ? FontWeight.w800 : FontWeight.w600,
-                        height: 1.15,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        color: isLight ? const Color(0xFF6D28D9) : Colors.white,
+                        size: 26,
                       ),
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 6),
                       Text(
-                        subtitle,
-                        style: const TextStyle(
-                          color: Color(0xFFA855F7),
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: isLight
+                              ? const Color(0xFF1E1B4B)
+                              : Colors.white,
+                          fontSize: 12,
+                          fontWeight:
+                              isLight ? FontWeight.w800 : FontWeight.w600,
+                          height: 1.15,
                         ),
                       ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: const TextStyle(
+                            color: Color(0xFFA855F7),
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
 
@@ -581,47 +588,51 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Header: Icon + "Bugungi darslar" | "Seshanba, 3 noyabr"
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today_rounded,
-                    color: Color(0xFF0F172A),
-                    size: 18,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Bugungi darslar',
-                    style: TextStyle(
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
                       color: Color(0xFF0F172A),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.3,
+                      size: 18,
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                children: const [
-                  Icon(
-                    Icons.calendar_month_outlined,
-                    color: Color(0xFF64748B),
-                    size: 14,
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    'Seshanba, 3 noyabr',
-                    style: TextStyle(
+                    SizedBox(width: 8),
+                    Text(
+                      'Bugungi darslar',
+                      style: TextStyle(
+                        color: Color(0xFF0F172A),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 16),
+                Row(
+                  children: const [
+                    Icon(
+                      Icons.calendar_month_outlined,
                       color: Color(0xFF64748B),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                      size: 14,
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(width: 4),
+                    Text(
+                      'Seshanba, 3 noyabr',
+                      style: TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 14),
 
@@ -793,46 +804,50 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Header: Target icon + "Bugungi vazifa" | "Chiziqli algebra"
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.track_changes_rounded,
-                          color: Color(0xFF7C3AED),
-                          size: 16,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.track_changes_rounded,
+                            color: Color(0xFF7C3AED),
+                            size: 16,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            'Bugungi vazifa',
+                            style: TextStyle(
+                              color: Color(0xFF0F172A),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
                         ),
-                        SizedBox(width: 5),
-                        Text(
-                          'Bugungi vazifa',
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEDE9FE),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Text(
+                          'Chiziqli algebra',
                           style: TextStyle(
-                            color: Color(0xFF0F172A),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 13,
+                            color: Color(0xFF6D28D9),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 10,
                           ),
                         ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 3,
                       ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEDE9FE),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Text(
-                        'Chiziqli algebra',
-                        style: TextStyle(
-                          color: Color(0xFF6D28D9),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 12),
 
@@ -870,74 +885,78 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
                 const SizedBox(height: 12),
 
                 // Footer row: Clock "~ 15 daqiqa" | Button "Bajarish ->"
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.access_time_rounded,
-                          color: Color(0xFF64748B),
-                          size: 13,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          '~ 15 daqiqa',
-                          style: TextStyle(
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.access_time_rounded,
                             color: Color(0xFF64748B),
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
+                            size: 13,
                           ),
-                        ),
-                      ],
-                    ),
-                    InkWell(
-                      onTap: () {
-                        if (widget.onNavigateQuiz != null) {
-                          widget.onNavigateQuiz!();
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
-                          ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color(0x446D28D9),
-                              blurRadius: 8,
-                              offset: Offset(0, 3),
+                          SizedBox(width: 4),
+                          Text(
+                            '~ 15 daqiqa',
+                            style: TextStyle(
+                              color: Color(0xFF64748B),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
                             ),
-                          ],
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Bajarish',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 11,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: () {
+                          if (widget.onNavigateQuiz != null) {
+                            widget.onNavigateQuiz!();
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x446D28D9),
+                                blurRadius: 8,
+                                offset: Offset(0, 3),
                               ),
-                            ),
-                            SizedBox(width: 4),
-                            Icon(
-                              CupertinoIcons.arrow_right,
-                              color: Colors.white,
-                              size: 12,
-                            ),
-                          ],
+                            ],
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Bajarish',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              SizedBox(width: 4),
+                              Icon(
+                                CupertinoIcons.arrow_right,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -965,23 +984,27 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Header: Bar chart + "Haftalik progress"
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.bar_chart_rounded,
-                      color: Color(0xFF7C3AED),
-                      size: 16,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      'Haftalik progress',
-                      style: TextStyle(
-                        color: Color(0xFF0F172A),
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.bar_chart_rounded,
+                        color: Color(0xFF7C3AED),
+                        size: 16,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 5),
+                      Text(
+                        'Haftalik progress',
+                        style: TextStyle(
+                          color: Color(0xFF0F172A),
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 12),
 
@@ -1081,47 +1104,72 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _bottomNavItem(
-                index: 0,
-                label: 'Asosiy',
-                icon: Icons.home_rounded,
-                onTap: () => setState(() => _activeNavIndex = 0),
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _bottomNavItem(
+                    index: 0,
+                    label: 'Asosiy',
+                    icon: Icons.home_rounded,
+                    onTap: () => setState(() => _activeNavIndex = 0),
+                  ),
+                ),
               ),
-              _bottomNavItem(
-                index: 1,
-                label: 'Fanlar',
-                icon: Icons.menu_book_rounded,
-                onTap: () {
-                  setState(() => _activeNavIndex = 1);
-                  widget.onNavigateSubject?.call('Chiziqli algebra');
-                },
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _bottomNavItem(
+                    index: 1,
+                    label: 'Fanlar',
+                    icon: Icons.menu_book_rounded,
+                    onTap: () {
+                      setState(() => _activeNavIndex = 1);
+                      widget.onNavigateSubject?.call('Chiziqli algebra');
+                    },
+                  ),
+                ),
               ),
-              _bottomNavItem(
-                index: 2,
-                label: 'Dars jadvali',
-                icon: Icons.calendar_today_rounded,
-                onTap: () {
-                  setState(() => _activeNavIndex = 2);
-                  widget.onNavigateSchedule?.call();
-                },
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _bottomNavItem(
+                    index: 2,
+                    label: 'Dars jadvali',
+                    icon: Icons.calendar_today_rounded,
+                    onTap: () {
+                      setState(() => _activeNavIndex = 2);
+                      widget.onNavigateSchedule?.call();
+                    },
+                  ),
+                ),
               ),
-              _bottomNavItem(
-                index: 3,
-                label: 'Kurslar',
-                icon: Icons.play_circle_outline_rounded,
-                onTap: () {
-                  setState(() => _activeNavIndex = 3);
-                  widget.onNavigateCourses?.call();
-                },
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _bottomNavItem(
+                    index: 3,
+                    label: 'Kurslar',
+                    icon: Icons.play_circle_outline_rounded,
+                    onTap: () {
+                      setState(() => _activeNavIndex = 3);
+                      widget.onNavigateCourses?.call();
+                    },
+                  ),
+                ),
               ),
-              _bottomNavItem(
-                index: 4,
-                label: 'Profil',
-                icon: Icons.person_outline_rounded,
-                onTap: () {
-                  setState(() => _activeNavIndex = 4);
-                  widget.onNavigateProfile?.call();
-                },
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _bottomNavItem(
+                    index: 4,
+                    label: 'Profil',
+                    icon: Icons.person_outline_rounded,
+                    onTap: () {
+                      setState(() => _activeNavIndex = 4);
+                      widget.onNavigateProfile?.call();
+                    },
+                  ),
+                ),
               ),
             ],
           ),

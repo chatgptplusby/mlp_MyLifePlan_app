@@ -126,6 +126,100 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
     });
   }
 
+  void _showCoinHowItWorksModal() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF0F1428),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF334155),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Coin qanday ishlaydi?',
+                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _lifecycleStep('1', '🎓', 'Vazifa va testlarni bajar', 'O‘qish, test, faoliyat va boshqa topshiriqlar.'),
+            const SizedBox(height: 8),
+            _lifecycleStep('2', '🪙', 'Coin yig‘', 'Bajarilgan vazifalar evaziga coinlar to‘plash.'),
+            const SizedBox(height: 8),
+            _lifecycleStep('3', '🎁', 'Hamkorlar bonusini tanla', 'Yig‘ilgan coinlar evaziga chegirma va bonuslar olish.'),
+            const SizedBox(height: 8),
+            _lifecycleStep('4', '🔲', 'Voucher ol', 'QR-kodli maxsus vaucherni yaratish.'),
+            const SizedBox(height: 8),
+            _lifecycleStep('5', '🏪', 'Lokatsiyaga borib foydalan', 'Filialga borib chegirmadan bahramand bo‘lish.'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _lifecycleStep(String step, String emoji, String title, String sub) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF13182E),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF222B48)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: const BoxDecoration(
+              color: Color(0xFF222B48),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(step, style: const TextStyle(color: Color(0xFF38BDF8), fontWeight: FontWeight.bold, fontSize: 12)),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(emoji, style: const TextStyle(fontSize: 18)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12)),
+                Text(sub, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -816,6 +910,67 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
                   ),
                 ),
               ),
+              const SizedBox(height: 14),
+
+              // "Coin qanday ishlaydi?" Interactive Explanatory Banner
+              InkWell(
+                onTap: _showCoinHowItWorksModal,
+                borderRadius: BorderRadius.circular(18),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF2A1B4E), Color(0xFF141738)],
+                    ),
+                    border: Border.all(color: const Color(0xFF8B5CF6).withOpacity(0.4)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF7C3AED),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Text('🪙', style: TextStyle(fontSize: 14)),
+                          ),
+                          const SizedBox(width: 8),
+                          const Expanded(
+                            child: Text(
+                              'Coin qanday ishlaydi?',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14),
+                            ),
+                          ),
+                          const Icon(CupertinoIcons.chevron_right, color: Color(0xFF8B5CF6), size: 16),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: const [
+                            _CoinStepPill('🎓', 'Vazifa bajar'),
+                            _ArrowDivider(),
+                            _CoinStepPill('🪙', 'Coin yig‘'),
+                            _ArrowDivider(),
+                            _CoinStepPill('🎁', 'Bonus tanla'),
+                            _ArrowDivider(),
+                            _CoinStepPill('🔲', 'Voucher ol'),
+                            _ArrowDivider(),
+                            _CoinStepPill('🏪', 'Lokatsiyada ishlat'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -1783,4 +1938,42 @@ class _MapGridPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _CoinStepPill extends StatelessWidget {
+  const _CoinStepPill(this.emoji, this.title);
+  final String emoji;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2548),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF2C3766)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 14)),
+          const SizedBox(width: 4),
+          Text(title, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
+}
+
+class _ArrowDivider extends StatelessWidget {
+  const _ArrowDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 6),
+      child: Icon(Icons.arrow_forward_rounded, color: Color(0xFF8B5CF6), size: 14),
+    );
+  }
 }
