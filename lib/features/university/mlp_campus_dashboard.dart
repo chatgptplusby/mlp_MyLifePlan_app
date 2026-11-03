@@ -16,6 +16,7 @@ class MLPCampusDashboard extends StatefulWidget {
     this.onNavigateProfile,
     this.onNavigateSchedule,
     this.onNavigateCourses,
+    this.onCoinInfo,
   });
 
   final SharedPreferences? prefs;
@@ -26,6 +27,7 @@ class MLPCampusDashboard extends StatefulWidget {
   final VoidCallback? onNavigateProfile;
   final VoidCallback? onNavigateSchedule;
   final VoidCallback? onNavigateCourses;
+  final VoidCallback? onCoinInfo;
 
   @override
   State<MLPCampusDashboard> createState() => _MLPCampusDashboardState();
@@ -298,7 +300,15 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
         ),
 
         // Right: Level 4 Card
-        Container(
+        GestureDetector(
+          onTap: () {
+            if (widget.onCoinInfo != null) {
+              widget.onCoinInfo!();
+            } else {
+              _showLevelDetailsDialog();
+            }
+          },
+          child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
@@ -388,9 +398,10 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
             ],
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
   // =========================================================================
   // 3. FOUR QUICK ACTION CARDS
@@ -417,7 +428,6 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
         Expanded(
           child: _quickActionCard(
             title: 'Vazifalar',
-            subtitle: 'ProofQuest',
             icon: CupertinoIcons.doc_checkmark,
             badgeCount: 3,
             onTap: () {
@@ -964,10 +974,12 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
         ),
         const SizedBox(width: 10),
 
-        // Right: "Haftalik progress"
+        // Right: "Haftalik progress" (Interactive)
         Expanded(
           flex: 10,
-          child: Container(
+          child: GestureDetector(
+            onTap: _showWeeklyProgressDialog,
+            child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -1072,8 +1084,9 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
             ),
           ),
         ),
-      ],
-    );
+      ),
+    ],
+  );
   }
 
   // =========================================================================
@@ -1300,6 +1313,184 @@ class _MLPCampusDashboardState extends State<MLPCampusDashboard> {
               trailing: const Text(
                 'Bugun',
                 style: TextStyle(color: Color(0xFF64748B), fontSize: 11),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showWeeklyProgressDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF0F1428),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.insights_rounded, color: Color(0xFF8B5CF6)),
+                    SizedBox(width: 8),
+                    Text(
+                      'Haftalik reja ko‘rsatkichi',
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFF13182E),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF222B48)),
+              ),
+              child: Column(
+                children: [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Bajarilgan vazifalar', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                      Text('3 / 5 (60%)', style: TextStyle(color: Color(0xFF38BDF8), fontWeight: FontWeight.bold, fontSize: 14)),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  LinearProgressIndicator(
+                    value: 0.60,
+                    backgroundColor: const Color(0xFF222B48),
+                    valueColor: const AlwaysStoppedAnimation(Color(0xFF8B5CF6)),
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Qolgan vazifalarni yakunlab yana +150 XP va +50 Coin oling!',
+              style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF8B5CF6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  if (widget.onNavigateMission != null) {
+                    widget.onNavigateMission!();
+                  }
+                },
+                child: const Text('Vazifalarga o‘tish', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLevelDetailsDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF0F1428),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Text('👑', style: TextStyle(fontSize: 22)),
+                    SizedBox(width: 8),
+                    Text(
+                      'Talaba Darajasi: Lv. 4',
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFF13182E),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF222B48)),
+              ),
+              child: Column(
+                children: [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Tajriba bali (XP)', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                      Text('1 250 / 2 000 XP', style: TextStyle(color: Color(0xFFA855F7), fontWeight: FontWeight.bold, fontSize: 14)),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  LinearProgressIndicator(
+                    value: 1250 / 2000,
+                    backgroundColor: const Color(0xFF222B48),
+                    valueColor: const AlwaysStoppedAnimation(Color(0xFFA855F7)),
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Keyingi 5-darajaga o‘tish uchun yana 750 XP to‘plang. Quiz Arena va testlarda qatnashing!',
+                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7C3AED),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  if (widget.onNavigateQuiz != null) {
+                    widget.onNavigateQuiz!();
+                  }
+                },
+                child: const Text('Quiz Arena bilan XP yig‘ish', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

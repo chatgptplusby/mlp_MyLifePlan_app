@@ -923,7 +923,7 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
                     gradient: const LinearGradient(
                       colors: [Color(0xFF2A1B4E), Color(0xFF141738)],
                     ),
-                    border: Border.all(color: const Color(0xFF8B5CF6).withOpacity(0.4)),
+                    border: Border.all(color: const Color(0xFF8B5CF6).withValues(alpha: 0.4)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1424,7 +1424,7 @@ class _MLPCampusProfileFlowState extends State<MLPCampusProfileFlow> {
         border: Border.all(color: Colors.white, width: 2),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.5),
+            color: color.withValues(alpha: 0.5),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),

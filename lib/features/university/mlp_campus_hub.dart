@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../onboarding/mlp_campus_entry.dart';
@@ -36,14 +35,7 @@ class MLPCampusHub extends StatefulWidget {
 
 class _MLPCampusHubState extends State<MLPCampusHub> {
   late String _activeFlow;
-
-  // Shared Centralized State across all flows
   int _coins = 2450;
-  int _xp = 1250;
-  int _level = 4;
-  int _streakDays = 12;
-  int _achievements = 5;
-  int _activeVouchers = 3;
 
   // Subjects Flow Sub-Navigation
   int _subjectSubScreen = 0; // 0: list, 1: detail, 2: lesson
@@ -61,50 +53,14 @@ class _MLPCampusHubState extends State<MLPCampusHub> {
     _activeFlow = widget.initialRoute;
   }
 
-  void _earnReward({required int coins, required int xp, String reason = ''}) {
-    setState(() {
-      _coins += coins;
-      _xp += xp;
-      if (_xp >= 2000) {
-        _level += 1;
-        _xp -= 2000;
-      }
-    });
-  }
-
-  void _spendCoins(int amount) {
-    if (_coins >= amount) {
-      setState(() {
-        _coins -= amount;
-        _activeVouchers += 1;
-      });
-    }
-  }
-
-  void _openCoinHowItWorksModal() {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: const Color(0xFF0F1428),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      builder: (ctx) => _CoinHowItWorksSheet(
-        coins: _coins,
-        onClose: () => Navigator.of(ctx).pop(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_activeFlow != 'dashboard') {
+    return PopScope(
+      canPop: _activeFlow == 'dashboard',
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _activeFlow != 'dashboard') {
           setState(() => _activeFlow = 'dashboard');
-          return false;
         }
-        return true;
       },
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
@@ -188,11 +144,7 @@ class _MLPCampusHubState extends State<MLPCampusHub> {
             });
           },
           onNavigateMission: () {
-            setState(() {
-              _selectedSubject = 'Chiziqli algebra';
-              _subjectSubScreen = 2; // Open determinant task
-              _activeFlow = 'subjects';
-            });
+            _showTasksModal();
           },
           onNavigateRewards: () {
             setState(() {
@@ -207,14 +159,23 @@ class _MLPCampusHubState extends State<MLPCampusHub> {
             });
           },
           onNavigateCourses: () {
-            setState(() {
-              _quizInitialStep = 0;
-              _activeFlow = 'quiz';
-            });
+            _showCoursesModal();
           },
           onNavigateSchedule: () {
             _showScheduleModal();
           },
+          onCoinInfo: () => showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: const Color(0xFF0F1428),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            ),
+            builder: (ctx) => _CoinHowItWorksSheet(
+              coins: _coins,
+              onClose: () => Navigator.of(ctx).pop(),
+            ),
+          ),
         );
     }
   }
@@ -293,6 +254,227 @@ class _MLPCampusHubState extends State<MLPCampusHub> {
           break;
       }
     });
+  }
+
+  void _showTasksModal() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF0F1428),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.assignment_outlined, color: Color(0xFF8B5CF6)),
+                    SizedBox(width: 8),
+                    Text(
+                      'Bugungi vazifalar (3)',
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _interactiveRow(
+              tag: '15 daq',
+              title: '1. Determinant mini-test',
+              sub: 'Chiziqli algebra • +50 XP, +25 Coin',
+              actionLabel: 'Bajarish',
+              onTap: () {
+                Navigator.of(ctx).pop();
+                setState(() {
+                  _selectedSubject = 'Chiziqli algebra';
+                  _subjectSubScreen = 2;
+                  _activeFlow = 'subjects';
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            _interactiveRow(
+              tag: '25 daq',
+              title: '2. Tarmoq topologiyasi',
+              sub: 'Kompyuter tarmoqlari • +40 XP',
+              actionLabel: 'O‘tish',
+              onTap: () {
+                Navigator.of(ctx).pop();
+                setState(() {
+                  _selectedSubject = 'Kompyuter tarmoqlari';
+                  _subjectSubScreen = 1;
+                  _activeFlow = 'subjects';
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            _interactiveRow(
+              tag: '30 daq',
+              title: '3. SQL JOIN laboratoriya',
+              sub: 'Ma’lumotlar bazasi • +60 XP',
+              actionLabel: 'O‘tish',
+              onTap: () {
+                Navigator.of(ctx).pop();
+                setState(() {
+                  _selectedSubject = 'Ma’lumotlar bazasi';
+                  _subjectSubScreen = 1;
+                  _activeFlow = 'subjects';
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCoursesModal() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF0F1428),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.play_lesson_rounded, color: Color(0xFF8B5CF6)),
+                    SizedBox(width: 8),
+                    Text(
+                      'Tavsiya etilgan kurslar',
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _interactiveRow(
+              tag: 'Mobil',
+              title: 'Dasturlash (Flutter & Dart)',
+              sub: '8 ta mavzu • 6 vazifa • 2 test',
+              actionLabel: 'Boshlash',
+              onTap: () {
+                Navigator.of(ctx).pop();
+                setState(() {
+                  _selectedSubject = 'Dasturlash (Flutter)';
+                  _subjectSubScreen = 1;
+                  _activeFlow = 'subjects';
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            _interactiveRow(
+              tag: 'Algoritm',
+              title: 'Diskret matematika va algoritmlar',
+              sub: 'Quiz Arena ligasi uchun maxsus kurs',
+              actionLabel: 'Kirish',
+              onTap: () {
+                Navigator.of(ctx).pop();
+                setState(() {
+                  _quizInitialStep = 0;
+                  _activeFlow = 'quiz';
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            _interactiveRow(
+              tag: 'Ingliz tili',
+              title: 'IT mutaxassislari uchun ingliz tili',
+              sub: '6 ta mavzu • 4 vazifa • B2 daraja',
+              actionLabel: 'Tanlash',
+              onTap: () {
+                Navigator.of(ctx).pop();
+                setState(() {
+                  _selectedSubject = 'Ingliz tili';
+                  _subjectSubScreen = 1;
+                  _activeFlow = 'subjects';
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _interactiveRow({
+    required String tag,
+    required String title,
+    required String sub,
+    required String actionLabel,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF13182E),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFF222B48)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF8B5CF6).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(tag, style: const TextStyle(color: Color(0xFF38BDF8), fontWeight: FontWeight.bold, fontSize: 11)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
+                    Text(sub, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)]),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(actionLabel, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _showScheduleModal() {
@@ -411,7 +593,7 @@ class _CoinHowItWorksSheet extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF8B5CF6).withOpacity(0.2),
+                      color: const Color(0xFF8B5CF6).withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Text('🪙', style: TextStyle(fontSize: 20)),
